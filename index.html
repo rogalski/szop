@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="SZOP">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>SZOP</title>
+    <link ng-href="css/{{theme}}.min.css" rel="stylesheet" ng-init="theme='spacelab'">
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SZOP</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li ng-class="theme=='bootstrap' ? 'active' : ''"><a href="#" ng-click="theme='bootstrap'">Bootstrap</a></li>
+            <li ng-class="theme=='sandstone' ? 'active' : ''"><a href="#" ng-click="theme='sandstone'">Sandstone</a></li>
+            <li ng-class="theme=='spacelab' ? 'active' : ''"><a href="#" ng-click="theme='spacelab'">Spacelab</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <div ng-controller="Dashboard">
+        <audio id="warningSound" loop>
+          <source src="sound/warning.mp3" type="audio/mpeg">
+        </audio>
+        <div class="alert alert-danger" role="alert" ng-if="errorOccurred">Oops! Error occurred. Something is wrong with REST Service :(. Last successful update: {{refreshed}}.</div>
+        <table class="table table-condensed table-striped">
+          <thead>
+            <th></th>
+            <th>Name</th>
+            <th>Room</th>
+            <th>Measurements</th>
+            <th>Latest Result</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="patient in patients | orderBy:'[-inDanger, name]'" ng-class="{{patient.inDanger}} ? 'active' : ''">
+              <td><span ng-if="patient.inDanger" class="glyphicon glyphicon-alert" aria-hidden="true" /></td>
+              <td>{{patient.name}}</td>
+              <td>{{patient.room}}</td>
+              <td>
+                <span ng-repeat="meas in patient.measurements" class="col-md-3">
+                <span class="label label-{{result_class(meas.value, meas.min, meas.max)}}">{{meas.name}}: {{meas.value}}{{meas.unit}}</span>
+                </span>
+              </td>
+              <td>
+                {{patient.lastUpdated}}
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <th></th>
+            <th>Name</th>
+            <th>Room</th>
+            <th>Measurements</th>
+            <th>Latest Result</th>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/controllers/dashboard.js"></script>
+  </body>
+</html>
